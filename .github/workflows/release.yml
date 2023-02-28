@@ -63,27 +63,4 @@ jobs:
           release_name: Release ${{ steps.version.outputs.new_version }}
           draft: false
           prerelease: false
-          body: ${{ steps.changelog.outputs.changelog }}
-
-      - name: Update version in pyproject.toml with release tag
-        uses: ciiiii/toml-editor@1.0.0
-        with:
-          file: "pyproject.toml"
-          key: "tool.poetry.version"
-          value: ${{ steps.version.outputs.new_tag }}
-
-      # - uses: EndBug/add-and-commit@v8 # You can change this to use a specific version.
-      #   with:
-      #     add: "pyproject.toml"
-      #     new_branch: chore/bump
-      - name: Remove files that should not be committed
-        run: |
-          rm -rf temp-dir
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: Bump version in pyproject ${{ needs.tag_and_release.outputs.release_tag }}"
-          branch: chore/bump
-          delete-branch: true
+          body: ${{ steps.changelog.outputs.changelog }}s

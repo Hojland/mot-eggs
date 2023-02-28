@@ -7,7 +7,7 @@ on:
 
 env:
   PROJECT_ID: mot-demo-1
-  IMAGE: hojland/mot-eggs
+  IMAGE: mot-eggs
   GKE_CLUSTER: demo
   GKE_ZONE: europe-west4a
   GKE_SA_KEY: ${{ secrets.GKE_SA_KEY }}
@@ -45,9 +45,9 @@ jobs:
         run: |-
           cd app
           docker build \
-            --tag "$IMAGE:${{ steps.fetch-latest-release.outputs.latest-release }}" \
+            --tag "docker.pkg.github.com/${{ github.repository }}/${IMAGE}" \
             .
       # Push the Docker image to Google Container Registry
       - name: Publish
         run: |-
-          docker push "$IMAGE:${{ steps.fetch-latest-release.outputs.latest-release }}"
+          docker push "docker.pkg.github.com/${{ github.repository }}/${IMAGE}"
