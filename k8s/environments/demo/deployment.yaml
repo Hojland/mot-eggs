@@ -24,12 +24,12 @@ spec:
             - containerPort: 8000
           resources:
             limits:
-              memory: 3000Mi
-              cpu: "1"
+              memory: 5000Mi
+              cpu: "3"
               ephemeral-storage: 4Gi
             requests:
-              memory: 5000Mi
-              cpu: "0.2"
+              memory: 3000Mi
+              cpu: "1"
               ephemeral-storage: 2Gi
           command:
             [

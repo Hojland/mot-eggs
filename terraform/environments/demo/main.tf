@@ -213,13 +213,3 @@ data "google_iam_policy" "k8s_deploy" {
     google_service_account.k8s_deploy
   ]
 }
-
-
-resource "google_project_iam_member" "k8s_deploy_gcr_access" {
-  project = google_project.demo.project_id
-  role    = "roles/storage.admin"
-  member  = "serviceAccount:${google_service_account.k8s_deploy.email}"
-  depends_on = [
-    google_service_account.k8s_deploy
-  ]
-}
