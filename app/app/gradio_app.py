@@ -7,9 +7,9 @@ from loguru import logger
 @dataclasses.dataclass
 class BytetrackArgs:
     track_thresh: int = 0.65
-    track_buffer: int = 30 * 1  # 30 framerate * 1 second
+    track_buffer: int = 30 * 0.1  # 30 framerate * 0.1 second
     mot20: bool = False
-    match_thresh: float = 0.975
+    match_thresh: float = 0.950
     fps: int = 30
     tsize: int = 416
     test_size: tuple = (416, 416)
@@ -28,7 +28,7 @@ demo = gr.Interface(
     mot_video,
     gr.Video(type="file", interactive=True),
     gr.Video(),
-    examples=[["goautonomous_eggs_short.mp4"], ["goautonomous_eggs.mp4"], ["goautonomous_eggs.mov"]],
+    examples=[["goautonomous_eggs_short.mp4"], ["goautonomous_eggs_small.mp4"]],
     cache_examples=True,
     title=title,
     description=description,
