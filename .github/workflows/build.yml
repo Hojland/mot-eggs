@@ -46,11 +46,10 @@ jobs:
         id: vars
         run: echo ::set-output name=docker_name::docker.pkg.github.com/${{ steps.repo_string.outputs.lowercase }}/${IMAGE}
       - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.vars.outputs.docker_name }}:${{needs.tag_and_release.outputs.release_tag}}
+        run: |-
+          docker build \
+            --tag "${{ steps.vars.outputs.docker_name }}:${{needs.tag_and_release.outputs.release_tag}}" \
+            .
       - name: Log into registry again
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
       - name: Retag to latest
