@@ -29,9 +29,9 @@ jobs:
         shell: bash
       - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
         with:
-          cluster_name: $GKE_CLUSTER
-          location: $GKE_ZONE
-          credentials: $GKE_SA_KEY
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}
+          credentials: ${{ env.GKE_SA_KEY }}
 
       # Set up kustomize
       - name: Set up Kustomize
