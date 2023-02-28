@@ -260,6 +260,7 @@ track.py
 **/*.mov
 **/runs
 
-**/tfstate.backup
+**/*.tfstate.backup
 **/*.tfstate
 **/.terraform
+terraform.tfstate.backup
