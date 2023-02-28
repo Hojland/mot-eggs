@@ -1,0 +1,58 @@
+name: deploy
+
+on:
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: mot-demo-1
+  IMAGE: mot-eggs
+  GKE_CLUSTER: demo
+  GKE_ZONE: europe-west4a
+  GKE_SA_KEY: ${{ secrets.GKE_SA_KEY }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    outputs:
+      hostname: ${{ steps.deploy.outputs.hostname }}
+    env:
+      K8S_YAML_DIR: k8s/environments/demo
+    steps:
+      - uses: actions/checkout@v2
+      # Get the GKE credentials so we can deploy to the cluster
+      - id: fetch-latest-release
+        run: |
+          git fetch --tags
+          export LATEST_RELEASE_VERSION=$(git describe --tags $(git rev-list --tags --max-count=1))
+          echo "::set-output name=latest-release::$(echo $LATEST_RELEASE_VERSION)"
+          echo The latest release version is \"$LATEST_RELEASE_VERSION\".
+        shell: bash
+      - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}
+          credentials: ${{ secrets.GKE_SA_KEY }}
+
+      # Set up kustomize
+      - name: Set up Kustomize
+        run: |-
+          cd ${{ env.K8S_YAML_DIR }}
+          curl --location https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.2.0/kustomize_v4.2.0_linux_amd64.tar.gz | tar xz
+          chmod u+x ./kustomize
+
+      - id: repo_string
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: ${{ github.repository }}
+
+      - name: Set docker name
+        id: vars
+        run: echo ::set-output name=docker_name::docker.pkg.github.com/${{ steps.repo_string.outputs.lowercase }}/${IMAGE}
+        
+      # Deploy the Docker image to the GKE cluster
+      - name: Deploy
+        run: |-
+          cd ${{ env.K8S_YAML_DIR }}
+          ./kustomize edit set image $DEPLOYMENT_NAME=${{ steps.vars.outputs.docker_name }}:${{steps.fetch-latest-release.outputs.latest-release }}
+          ./kustomize build . | kubectl apply -f -
+        # 4 print here is 'external ip' -> which here is referring to the shared vpc
