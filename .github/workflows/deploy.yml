@@ -48,7 +48,7 @@ jobs:
           string: ${{ github.repository }}
       - name: Set docker name
         id: vars
-        run: echo ::set-output name=docker_name::docker.pkg.github.com/${{ steps.repo_string.outputs.lowercase }}/${IMAGE}
+        run: echo ::set-output name=docker_name::ghcr.io/${{ steps.repo_string.outputs.lowercase }}/${IMAGE}
         
       # Deploy the Docker image to the GKE cluster
       - name: Deploy
@@ -56,4 +56,3 @@ jobs:
           cd ${{ env.K8S_YAML_DIR }}
           ./kustomize edit set image $IMAGE=${{ steps.vars.outputs.docker_name }}:${{steps.fetch-latest-release.outputs.latest-release }}
           ./kustomize build . | kubectl apply -f -
-        # 4 print here is 'external ip' -> which here is referring to the shared vpc

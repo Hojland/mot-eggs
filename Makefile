@@ -190,3 +190,13 @@ dev_container_gpu:
 create_sa_key:
 	gcloud iam service-accounts keys create key.json --iam-account=k8s-deploy-service-account@mot-demo-1.iam.gserviceaccount.com
 	export GKE_SA_KEY=$(cat key.json | base64)
+
+
+# needs to just be run in the terminal with your own user. Here you need an access token for terminal access for github as your docker login
+image_pull_rights:
+	gcloud container clusters get-credentials demo --zone europe-west4-a --project mot-demo-1
+	docker login docker.pkg.github.com -u hojland
+	kubectl create secret generic regcred \
+		--from-file=.dockerconfigjson=/home/gohojland/.docker/config.json \
+		--type=kubernetes.io/dockerconfigjson
+
