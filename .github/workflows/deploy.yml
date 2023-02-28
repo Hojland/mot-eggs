@@ -5,7 +5,7 @@ on:
 
 env:
   PROJECT_ID: mot-demo-1
-  IMAGE: hojland/mot-eggs
+  IMAGE: mot-eggs
   GKE_CLUSTER: demo
   GKE_ZONE: europe-west4a
   GKE_SA_KEY: ${{ secrets.GKE_SA_KEY }}
@@ -44,6 +44,6 @@ jobs:
       - name: Deploy
         run: |-
           cd ${{ env.K8S_YAML_DIR }}
-          ./kustomize edit set image $DEPLOYMENT_NAME=$IMAGE:${{steps.fetch-latest-release.outputs.latest-release }}
+          ./kustomize edit set image $DEPLOYMENT_NAME=docker.pkg.github.com/${{ github.repository }}/${IMAGE}
           ./kustomize build . | kubectl apply -f -
         # 4 print here is 'external ip' -> which here is referring to the shared vpc
