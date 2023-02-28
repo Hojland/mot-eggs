@@ -40,6 +40,7 @@ videoio = "^0.2.8"
 av = "^10.0.0"
 ffmpeg-python = "^0.2.0"
 poethepoet = "^0.18.1"
+opencv-contrib-python = "4.5.2.54"
 
 [tool.poetry.dependencies.uvicorn]
 version = ">=0.18.3"
