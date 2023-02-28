@@ -13,8 +13,8 @@ env:
   GKE_SA_KEY: ${{ secrets.GKE_SA_KEY }}
 
 jobs:
-  build-publish:
-    name: Setup, Build, Publish, and Deploy
+  tag_and_release:
+    name: tag_and_release
     runs-on: ubuntu-latest
     #    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     outputs:
@@ -31,23 +31,30 @@ jobs:
           echo The latest release version is \"$LATEST_RELEASE_VERSION\".
         shell: bash
 
-      # Setup gcloud CLI
-      - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+  build_and_push:
+    runs-on: ubuntu-latest
+    needs: [tag_and_release]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+      - id: repo_string
+        uses: ASzc/change-string-case-action@v1
         with:
-          service_account_key: ${{ secrets.GKE_SA_KEY }}
-          project_id: ${{ env.PROJECT_ID }}
-
-      # Configure docker to use the gcloud command-line tool as a credential helper
-      - run: |-
-          gcloud --quiet auth configure-docker
-      # Build the Docker image
-      - name: Build
-        run: |-
-          cd app
-          docker build \
-            --tag "docker.pkg.github.com/${{ github.repository }}/${IMAGE}" \
-            .
-      # Push the Docker image to Google Container Registry
-      - name: Publish
-        run: |-
-          docker push "docker.pkg.github.com/${{ github.repository }}/${IMAGE}"
+          string: ${{ github.repository }}
+      - name: Set docker name
+        id: vars
+        run: echo ::set-output name=docker_name::docker.pkg.github.com/${{ steps.repo_string.outputs.lowercase }}/${IMAGE}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.vars.outputs.docker_name }}:${{needs.tag_and_release.outputs.release_tag}}
+      - name: Log into registry again
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+      - name: Retag to latest
+        run: |
+          docker pull ${{ steps.vars.outputs.docker_name }}:${{needs.tag_and_release.outputs.release_tag}}
+          docker tag ${{ steps.vars.outputs.docker_name }}:${{needs.tag_and_release.outputs.release_tag}} ${{ steps.vars.outputs.docker_name }}:latest
+          docker push ${{ steps.vars.outputs.docker_name }}:latest

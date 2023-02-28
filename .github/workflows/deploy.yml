@@ -40,10 +40,18 @@ jobs:
           curl --location https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.2.0/kustomize_v4.2.0_linux_amd64.tar.gz | tar xz
           chmod u+x ./kustomize
 
+      - id: repo_string
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: ${{ github.repository }}
+      - name: Set docker name
+        id: vars
+        run: echo ::set-output name=docker_name::docker.pkg.github.com/${{ steps.repo_string.outputs.lowercase }}/${IMAGE}
+        
       # Deploy the Docker image to the GKE cluster
       - name: Deploy
         run: |-
           cd ${{ env.K8S_YAML_DIR }}
-          ./kustomize edit set image $DEPLOYMENT_NAME=docker.pkg.github.com/${{ github.repository }}/${IMAGE}
+          ./kustomize edit set image $DEPLOYMENT_NAME=${{ steps.vars.outputs.docker_name }}:${{steps.fetch-latest-release.outputs.latest-release }}
           ./kustomize build . | kubectl apply -f -
         # 4 print here is 'external ip' -> which here is referring to the shared vpc
