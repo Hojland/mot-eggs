@@ -1,10 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - deployment.yaml
-  - autoscale.yaml
-  - service.yaml
+- deployment.yaml
+- autoscale.yaml
+- service.yaml
 images:
-  - name: mot-eggs
-    newName: eu.gcr.io/terraform-admin-goauto/mot-eggs
-    newTag: v0.0.1
+- name: mot-eggs
+  newName: ghcr.io/hojland/mot-eggs/mot-eggs
+  newTag: latest

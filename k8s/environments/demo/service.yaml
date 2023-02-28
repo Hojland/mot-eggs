@@ -3,7 +3,6 @@ kind: Service
 metadata:
   name: mot-eggs-service
   annotations:
-    networking.gke.io/load-balancer-type: "Internal"
     cloud.google.com/neg: '{"ingress": true}'
 spec:
   selector:

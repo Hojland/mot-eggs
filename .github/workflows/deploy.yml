@@ -54,6 +54,6 @@ jobs:
       - name: Deploy
         run: |-
           cd ${{ env.K8S_YAML_DIR }}
-          ./kustomize edit set image $DEPLOYMENT_NAME=${{ steps.vars.outputs.docker_name }}:${{steps.fetch-latest-release.outputs.latest-release }}
+          ./kustomize edit set image $IMAGE=${{ steps.vars.outputs.docker_name }}:${{steps.fetch-latest-release.outputs.latest-release }}
           ./kustomize build . | kubectl apply -f -
         # 4 print here is 'external ip' -> which here is referring to the shared vpc
