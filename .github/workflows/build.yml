@@ -43,6 +43,7 @@ jobs:
       # Build the Docker image
       - name: Build
         run: |-
+          cd app
           docker build \
             --tag "$IMAGE:${{ steps.fetch-latest-release.outputs.latest-release }}" \
             .
