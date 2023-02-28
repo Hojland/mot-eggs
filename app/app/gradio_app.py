@@ -2,7 +2,6 @@ import gradio as gr
 import dataclasses
 import detect_mot
 from loguru import logger
-import cv2
 
 
 @dataclasses.dataclass
