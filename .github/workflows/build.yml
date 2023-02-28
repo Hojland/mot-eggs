@@ -47,6 +47,7 @@ jobs:
         run: echo ::set-output name=docker_name::docker.pkg.github.com/${{ steps.repo_string.outputs.lowercase }}/${IMAGE}
       - name: Build and push
         run: |-
+          cd app
           docker build \
             --tag "${{ steps.vars.outputs.docker_name }}:${{needs.tag_and_release.outputs.release_tag}}" \
             .
