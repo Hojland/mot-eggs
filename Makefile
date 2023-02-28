@@ -185,3 +185,8 @@ dev_container_gpu:
 		--name $(project)-train \
 		${image_name}-trainer:v0.0.1 \
 		"sleep 10000"
+
+
+create_sa_key:
+	gcloud iam service-accounts keys create key.json --iam-account=k8s-deploy-service-account@mot-demo-1.iam.gserviceaccount.com
+	export GKE_SA_KEY=$(cat key.json | base64)

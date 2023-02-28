@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mot-eggs-deployment
+  labels:
+    app: mot-eggs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mot-eggs
+  template:
+    metadata:
+      labels:
+        app: mot-eggs
+    spec:
+      serviceAccountName: default
+      securityContext:
+        fsGroup: 65534
+      containers:
+        - name: mot-eggs-app
+          image: mot-eggs
+          ports:
+            - containerPort: 8000
+          resources:
+            limits:
+              memory: 3000Mi
+              cpu: "1"
+              ephemeral-storage: 4Gi
+            requests:
+              memory: 5000Mi
+              cpu: "0.2"
+              ephemeral-storage: 2Gi
+          command:
+            [
+              "python",
+              "gradio_app.py",
+            ]
