@@ -44,10 +44,6 @@ jobs:
         uses: ASzc/change-string-case-action@v1
         with:
           string: ${{ github.repository }}
-<<<<<<< HEAD
-
-=======
->>>>>>> caff70f128e03d83024121be944f0f88b99e96a8
       - name: Set docker name
         id: vars
         run: echo ::set-output name=docker_name::docker.pkg.github.com/${{ steps.repo_string.outputs.lowercase }}/${IMAGE}
