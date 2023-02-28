@@ -1,6 +1,10 @@
 
 <a name="0.0.3"></a>
-## [0.0.3](http://github.com/Hojland/mot-eggs/compare/v0.0.2...0.0.3) (2023-02-28)
+## [0.0.3](http://github.com/Hojland/mot-eggs/compare/v0.0.3...0.0.3) (0001-01-01)
+
+
+<a name="v0.0.3"></a>
+## [v0.0.3](http://github.com/Hojland/mot-eggs/compare/v0.0.2...v0.0.3) (2023-02-28)
 
 ### Pull Requests
 
