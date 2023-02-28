@@ -2,6 +2,7 @@ import gradio as gr
 import dataclasses
 import detect_mot
 from loguru import logger
+import cv2
 
 
 @dataclasses.dataclass
@@ -28,7 +29,7 @@ demo = gr.Interface(
     mot_video,
     gr.Video(type="file", interactive=True),
     gr.Video(),
-    examples=[["goautonomous_eggs_short.mp4"], ["goautonomous_eggs_small.mp4"]],
+    examples=[["ml/goautonomous_eggs_short.mp4"], ["ml/goautonomous_eggs_small.mp4"]],
     cache_examples=True,
     title=title,
     description=description,
