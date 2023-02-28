@@ -260,8 +260,6 @@ augment.py
 app/app/goautonomous_eggs.mov
 _Eggcly videos.zip
 track.py
-app/app/ml/best.pt
 **/*.mov
 **/*.mp4
 **/runs
-ml
