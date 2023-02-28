@@ -1,0 +1,63 @@
+apiVersion: "serving.kserve.io/v1beta1"
+kind: "InferenceService"
+metadata:
+  name: mot-eggs
+  namespace: models
+  labels:
+    prometheus.io/scrape: "true"
+    kserve-predictor: "triton"
+  annotations:
+    autoscaling.knative.dev/target: "1"
+    serving.kserve.io/gke-accelerator: "nvidia-tesla-t4"
+    sidecar.istio.io/inject: "true"
+    autoscaling.knative.dev/panic-threshold-percentage: "1000.0"
+    proxy.istio.io/config: "{'ISTIO_META_DNS_CAPTURE': 'true', 'ISTIO_META_DNS_AUTO_ALLOCATE': 'true'}"
+    # networking.knative.dev/disable-auto-tls: "true"
+spec:
+  predictor:
+    minReplicas: 1
+    maxReplicas: 2
+    # canaryTrafficPercent: 20
+    timeout: 60
+    nodeSelector:
+      cloud.google.com/gke-accelerator: "nvidia-tesla-t4"
+    # No batcher as we try to use dynamic shapes
+    #    batcher:
+    #      maxBatchSize: 32
+    #      maxLatency: 500
+    triton:
+      protocolVersion: v2
+      runtimeVersion: 22.09-py3
+      storageUri: "gs://kserve-models-saga-sandbox/models/mot-eggs"
+      env:
+        - name: OMP_NUM_THREADS
+          value: "1"
+      resources:
+        limits:
+          memory: 8Gi
+          nvidia.com/gpu: 1
+        requests:
+          nvidia.com/gpu: 1
+  transformer:
+    containers:
+      - image: eu.gcr.io/terraform-admin-goauto/kserve-transformer-mot-eggs:v0.0.1
+        name: kserve-transformer-mot-eggs
+        command:
+          - "poetry"
+          - "run"
+          - "python"
+          - "-m"
+          - "transformer"
+        args:
+          - --protocol
+          - v2
+        env:
+          - name: CONFIG_PATH_STORAGE_URI
+            value: "gs://kserve-models-saga-sandbox/models/mot-eggs"
+    nodeSelector:
+      transformer: "true"
+    tolerations:
+    - key: "transformer"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"

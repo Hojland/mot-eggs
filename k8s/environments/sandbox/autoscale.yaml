@@ -1,0 +1,36 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: mot-eggs-autoscale
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: mot-eggs-deployment
+  minReplicas: 5
+  maxReplicas: 10
+  behavior:
+    scaleDown:
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 600 # scaledown no more than 1 pod per 10 minutes
+      selectPolicy: Min
+      stabilizationWindowSeconds: 300
+    scaleUp:
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 60 # increase no more than 1 pod per 60 seconds
+        - type: Percent
+          value: 12
+          periodSeconds: 80 # OR increase no more than 12% per 80 seconds (this won't be binding for us yet)
+      selectPolicy: Max
+      stabilizationWindowSeconds: 0
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Value # AverageValue with AverageValue or AverageValue with Value in amount?
+          averageValue: "40m"

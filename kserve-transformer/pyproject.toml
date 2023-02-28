@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "kserve-transformer-mot-eggs"
+version = "v0.0.1"
+description = "Multiple object tracking of easter eggs in an app"
+authors = ["Martin Højland Hansen (hojland93@gmail.com)"]
+
+[tool.poetry.dependencies]
+python = "3.10.4"
+kserve = "^0.9.0"
+tritonclient = {version = ">2.14.2", extras = ["all"]}
+transformers = "^4.20.1"
+protobuf = "3.19.0"
+sentencepiece = "^0.1.96"
+google-cloud-storage = "^2.5.0"
+
+[tool.poetry.dev-dependencies]
+pre-commit = "^2.16.0"
+ipykernel = "^5.3.4"
+jupyterlab = "^2.2.9"
+mypy = "^0.770"
+isort = "^4.3.21"
+autoflake = "^1.3.1"
+
+[tool.poetry.dev-dependencies.black]
+version = "^22.1"
+allow-prereleases = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--black"
+testpaths = "tests"
+
+[build-system]
+requires = [ "poetry>=1.1.8" ]
+build-backend = "poetry.masonry.api"

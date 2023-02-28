@@ -1,0 +1,11 @@
+.env
+.vscode
+.venv
+.python-version
+*/__main__
+*/*/__main__
+src/mail_request_classification/
+src/mail_request_classification/*
+src/ar_federated/*
+src/wandb/*
+src/logs/*

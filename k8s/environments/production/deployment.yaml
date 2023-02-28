@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mot-eggs-deployment
+  labels:
+    app: mot-eggs
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mot-eggs
+  template:
+    metadata:
+      labels:
+        app: mot-eggs
+        sidecar.istio.io/inject: "true"
+    spec:
+      serviceAccountName: default
+      securityContext:
+        fsGroup: 65534
+      containers:
+        - name: mot-eggs-app
+          image: mot-eggs
+          ports:
+            - containerPort: 8000
+          resources:
+            limits:
+              memory: 3000Mi
+              cpu: "1"
+              ephemeral-storage: 4Gi
+            requests:
+              memory: 5000Mi
+              cpu: "0.2"
+              ephemeral-storage: 2Gi
+          livenessProbe:
+            httpGet:
+              path: /v1/livez
+              port: 8000
+            initialDelaySeconds: 1800
+            timeoutSeconds: 600
+            periodSeconds: 1200
+          readinessProbe:
+            httpGet:
+              path: /v1/readyz
+              port: 8000
+            initialDelaySeconds: 10
+            timeoutSeconds: 600
+            periodSeconds: 60
+          env:
+            - name: POSTGREST_URL
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: postgrest_url
+            - name: CLOUD_LOGGING
+              value: "true"
+            - name: ENVIRONMENT
+              value: sandbox
+            - name: JWT_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt
+                  key: jwt_public_key
+            - name: SAGA_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: sagatoken
+                  key: gfs_token
+          command:
+            [
+              "poetry",
+              "run",
+              "uvicorn",
+              "app:app",
+              "--host",
+              "0.0.0.0",
+              "--port",
+              "8000",
+            ]
