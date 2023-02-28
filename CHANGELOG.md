@@ -1,0 +1,13 @@
+
+<a name="0.0.1"></a>
+## 0.0.1 (2023-02-28)
+
+### Features
+
+* add deployment in gha and terraform
+
+### Pull Requests
+
+* Merge pull request [#3](http://github.com/Hojland/mot-eggs/issues/3) from Hojland/feat/deployment
+* Merge pull request [#2](http://github.com/Hojland/mot-eggs/issues/2) from Hojland/feat/deployment
+* Merge pull request [#1](http://github.com/Hojland/mot-eggs/issues/1) from Hojland/feat/deployment
