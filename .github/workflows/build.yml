@@ -9,7 +9,7 @@ env:
   PROJECT_ID: mot-demo-1
   IMAGE: mot-eggs
   GKE_CLUSTER: demo
-  GKE_ZONE: europe-west4a
+  GKE_ZONE: europe-west4-a
   GKE_SA_KEY: ${{ secrets.GKE_SA_KEY }}
 
 jobs:
