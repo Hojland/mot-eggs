@@ -3,9 +3,7 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - autoscale.yaml
-  - app_service.yaml
-  - gateway.yaml
-  - virtualservice.yaml
+  - service.yaml
 images:
   - name: mot-eggs
     newName: eu.gcr.io/terraform-admin-goauto/mot-eggs

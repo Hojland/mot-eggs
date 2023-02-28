@@ -259,6 +259,8 @@ _Eggcly videos.zip
 track.py
 **/*.mov
 **/runs
-.terraform
-**/terraform.tfstate.backup
+
+**/*.tfstate.backup
 **/*.tfstate
+**/.terraform
+terraform.tfstate.backup
