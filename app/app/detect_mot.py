@@ -186,7 +186,7 @@ def run(
             s += "%gx%g " % im.shape[2:]  # print string
             gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
             imc = im0.copy() if save_crop else im0  # for save_crop
-            annotator = Annotator(im0, line_width=line_thickness, example=str(names))
+            annotator = Annotator(im0, line_width=line_thickness, example=str(names), font_size=6)
             if len(det):
                 # Rescale boxes from img_size to im0 size
                 im_bgr_shape = (im.shape[2], im.shape[3], im.shape[1])
