@@ -146,25 +146,6 @@ resource "google_container_cluster" "demo" {
     google_project_iam_binding.container_hostServiceAgent]
 }
 
-resource "google_container_node_pool" "primary_preemptible_nodes" {
-  name       = "demo-node-pool"
-  location   = local.netherlands_id_specific
-  cluster    = google_container_cluster.demo.name
-  project    = google_project.demo.project_id
-  node_count = 1
-
-  node_config {
-    preemptible  = true
-    machine_type = "c2d-highcpu-4"
-
-    # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    service_account = google_service_account.demo.email
-    oauth_scopes    = [
-      "https://www.googleapis.com/auth/cloud-platform"
-    ]
-  }
-}
-
 resource "google_container_node_pool" "node_pool_1" {
   name               = "demo-node-pool-1"
   location           = local.netherlands_id_specific

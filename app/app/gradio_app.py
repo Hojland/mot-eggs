@@ -6,10 +6,10 @@ from loguru import logger
 
 @dataclasses.dataclass
 class BytetrackArgs:
-    track_thresh: int = 0.65
+    track_thresh: int = 0.15
     track_buffer: int = 30 * 0.1  # 30 framerate * 0.1 second
     mot20: bool = False
-    match_thresh: float = 0.950
+    match_thresh: float = 0.250
     fps: int = 30
     tsize: int = 416
     test_size: tuple = (416, 416)
@@ -17,18 +17,20 @@ class BytetrackArgs:
 
 def mot_video(video):
     logger.info(video)
-    video = detect_mot.run("ml/best.pt", source=video, data="ml/egg.yaml", device="cpu", bytetrackargs=BytetrackArgs())
+    video = detect_mot.run(
+        "ml/best.pt", source=video, data="ml/egg.yaml", device="cpu", bytetrackargs=BytetrackArgs(), line_thickness=1
+    )
     return video
 
 
 title = "GoAutonomous Eggs Detection"
-description = "Finding eastereggs prior to easter using yolov5 and byte"
+description = "Finding eastereggs prior to easter using yolov5 and ByteTrack"
 
 demo = gr.Interface(
     mot_video,
     gr.Video(type="file", interactive=True),
     gr.Video(),
-    examples=[["ml/goautonomous_eggs_short.mp4"], ["ml/goautonomous_eggs_small.mp4"]],
+    examples=[["ml/goautonomous_eggs_short.mp4"]],  # ["ml/goautonomous_eggs_small.mp4"]
     cache_examples=True,
     title=title,
     description=description,
